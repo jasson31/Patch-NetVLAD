@@ -204,7 +204,7 @@ if __name__ == "__main__":
 
     validation_dataset = MSLS(opt.dataset_root_dir, mode='val', transform=input_transform(),
                               bs=int(config['train']['cachebatchsize']), threads=opt.threads,
-                              margin=float(config['train']['margin']), posDistThr=25)
+                              margin=float(config['train']['margin']), posDistThr=0.1)
 
     print('===> Training query set:', len(train_dataset.qIdx))
     print('===> Evaluating on val set, query count:', len(validation_dataset.qIdx))

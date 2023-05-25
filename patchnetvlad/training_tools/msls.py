@@ -44,11 +44,9 @@ from tqdm import tqdm
 
 
 default_cities = {
-    'train': ["trondheim", "london", "boston", "melbourne", "amsterdam", "helsinki",
-              "tokyo", "toronto", "saopaulo", "moscow", "zurich", "paris", "bangkok",
-              "budapest", "austin", "berlin", "ottawa", "phoenix", "goa", "amman", "nairobi", "manila"],
-    'val': ["cph", "sf"],
-    'test': ["miami", "athens", "buenosaires", "stockholm", "bengaluru", "kampala"]
+    'train': ["Pillar_train"],
+    'val': ["Pillar_val"],
+    'test': ["Pillar_test"]
 }
 
 
@@ -75,7 +73,7 @@ class ImagesFromList(Dataset):
 
 class MSLS(Dataset):
     def __init__(self, root_dir, cities='', nNeg=5, transform=None, mode='train', task='im2im', subtask='all',
-                 seq_length=1, posDistThr=10, negDistThr=25, cached_queries=1000, cached_negatives=1000,
+                 seq_length=1, posDistThr=100, negDistThr=200, cached_queries=20, cached_negatives=100,
                  positive_sampling=True, bs=24, threads=8, margin=0.1, exclude_panos=True):
 
         # initializing
@@ -463,7 +461,7 @@ class MSLS(Dataset):
         pidxs = np.unique([i for idx in self.pIdx[qidxs] for i in idx])
 
         # take m = 5*cached_queries is number of negative images
-        nidxs = np.random.choice(len(self.dbImages), self.cached_negatives, replace=False)
+        nidxs = np.random.choice(len(self.dbImages), len(self.dbImages), replace=False)
 
         # and make sure that there is no positives among them
         nidxs = nidxs[np.in1d(nidxs, np.unique([i for idx in self.nonNegIdx[qidxs] for i in idx]), invert=True)]
