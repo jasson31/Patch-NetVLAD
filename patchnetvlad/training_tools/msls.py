@@ -73,7 +73,7 @@ class ImagesFromList(Dataset):
 
 class MSLS(Dataset):
     def __init__(self, root_dir, cities='', nNeg=5, transform=None, mode='train', task='im2im', subtask='all',
-                 seq_length=1, posDistThr=100, negDistThr=200, posRotThr=0.08, negRotThr=0.13, cached_queries=1000, cached_negatives=1000,
+                 seq_length=1, posDistThr=100, negDistThr=200, posRotThr=0.2, negRotThr=1.0, cached_queries=1000, cached_negatives=1000,
                  positive_sampling=True, bs=24, threads=8, margin=0.1, exclude_panos=True):
 
         # initializing
@@ -220,13 +220,12 @@ class MSLS(Dataset):
                 rotationNeigh.fit(rotDb)
                 pos_rotation_distances, pos_rotation_indices = rotationNeigh.radius_neighbors(rotQ, self.posRotThr)
 
-                #self.all_pos_indices.extend(np.intersect1d(pos_distance_indices, pos_rotation_indices))
                 self.all_pos_indices.extend([np.intersect1d(pos_distance_indices[i], pos_rotation_indices[i]) for i in range(len(pos_distance_indices))])
 
                 if self.mode == 'train':
                     _, nDistI = distanceNeigh.radius_neighbors(utmQ, self.negDistThr)
                     _, nRotI = rotationNeigh.radius_neighbors(rotQ, self.negRotThr)
-                    nI = [np.intersect1d(nDistI[i], nRotI[i]) for i in range(len(nDistI))]
+                    nI = np.array([np.array(np.intersect1d(nDistI[i], nRotI[i]), dtype='int64') for i in range(len(nDistI))], dtype='object')
 
                 for q_seq_idx in range(len(qSeqKeys)):
 
