@@ -36,7 +36,7 @@ from sklearn.neighbors import NearestNeighbors
 from patchnetvlad.tools import PATCHNETVLAD_ROOT_DIR
 
 
-def input_transform(resize=(480, 640)):
+def input_transform(resize=(360, 640)):
     if resize[0] > 0 and resize[1] > 0:
         return transforms.Compose([
             transforms.Resize(resize),

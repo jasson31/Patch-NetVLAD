@@ -73,7 +73,7 @@ class ImagesFromList(Dataset):
 
 class MSLS(Dataset):
     def __init__(self, root_dir, cities='', nNeg=5, transform=None, mode='train', task='im2im', subtask='all',
-                 seq_length=1, posDistThr=100, negDistThr=200, cached_queries=20, cached_negatives=100,
+                 seq_length=1, posDistThr=100, negDistThr=200, posRotThr=0.08, negRotThr=0.13, cached_queries=1000, cached_negatives=1000,
                  positive_sampling=True, bs=24, threads=8, margin=0.1, exclude_panos=True):
 
         # initializing
@@ -107,6 +107,8 @@ class MSLS(Dataset):
         self.margin = margin
         self.posDistThr = posDistThr
         self.negDistThr = negDistThr
+        self.posRotThr = posRotThr
+        self.negRotThr = negRotThr
         self.cached_queries = cached_queries
         self.cached_negatives = cached_negatives
 
@@ -203,24 +205,35 @@ class MSLS(Dataset):
                 utmQ = qData[['easting', 'northing']].values.reshape(-1, 2)
                 utmDb = dbData[['easting', 'northing']].values.reshape(-1, 2)
 
+                # rotation quaternions
+                rotQ = qData[['qx', 'qy', 'qz', 'qw']].values.reshape(-1, 4)
+                rotDb = dbData[['qx', 'qy', 'qz', 'qw']].values.reshape(-1, 4)
+
                 night, sideways, index = qData['night'].values, (
                             qData['view_direction'] == 'Sideways').values, qData.index
 
                 # find positive images for training
-                neigh = NearestNeighbors(algorithm='brute')
-                neigh.fit(utmDb)
-                pos_distances, pos_indices = neigh.radius_neighbors(utmQ, self.posDistThr)
-                self.all_pos_indices.extend(pos_indices)
+                distanceNeigh = NearestNeighbors(algorithm='brute')
+                distanceNeigh.fit(utmDb)
+                pos_distance_distances, pos_distance_indices = distanceNeigh.radius_neighbors(utmQ, self.posDistThr)
+                rotationNeigh = NearestNeighbors(algorithm='brute')
+                rotationNeigh.fit(rotDb)
+                pos_rotation_distances, pos_rotation_indices = rotationNeigh.radius_neighbors(rotQ, self.posRotThr)
+
+                #self.all_pos_indices.extend(np.intersect1d(pos_distance_indices, pos_rotation_indices))
+                self.all_pos_indices.extend([np.intersect1d(pos_distance_indices[i], pos_rotation_indices[i]) for i in range(len(pos_distance_indices))])
 
                 if self.mode == 'train':
-                    nD, nI = neigh.radius_neighbors(utmQ, self.negDistThr)
+                    _, nDistI = distanceNeigh.radius_neighbors(utmQ, self.negDistThr)
+                    _, nRotI = rotationNeigh.radius_neighbors(rotQ, self.negRotThr)
+                    nI = [np.intersect1d(nDistI[i], nRotI[i]) for i in range(len(nDistI))]
 
                 for q_seq_idx in range(len(qSeqKeys)):
 
                     q_frame_idxs = seqIdx2frameIdx(q_seq_idx, qSeqIdxs)
                     q_uniq_frame_idx = frameIdx2uniqFrameIdx(q_frame_idxs, unique_qSeqIdx)
 
-                    p_uniq_frame_idxs = np.unique([p for pos in pos_indices[q_uniq_frame_idx] for p in pos])
+                    p_uniq_frame_idxs = np.unique([p for pos in pos_distance_indices[q_uniq_frame_idx] for p in pos])
 
                     # the query image has at least one positive
                     if len(p_uniq_frame_idxs) > 0:
