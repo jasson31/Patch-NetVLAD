@@ -6,6 +6,11 @@ python feature_extract.py --config_path patchnetvlad/configs/performance.ini --d
 python feature_extract.py --config_path patchnetvlad/configs/performance.ini --dataset_file_path=pillar_imageNames_query.txt --dataset_root_dir=../../Dataset/Pillar --output_features_dir patchnetvlad/output_features/pillar_query
 python feature_extract.py --config_path patchnetvlad/configs/performance.ini --dataset_file_path=pillar_imageNames_query_small.txt --dataset_root_dir=../../Dataset/Pillar --output_features_dir patchnetvlad/output_features/pillar_query_small
 
+python feature_extract.py --config_path patchnetvlad/configs/performance.ini --dataset_file_path=pillar_imageNames_index.txt --dataset_root_dir=../datasets/Pillar --output_features_dir patchnetvlad/output_features/pillar_index
+python feature_extract.py --config_path patchnetvlad/configs/performance.ini --dataset_file_path=pillar_imageNames_query.txt --dataset_root_dir=../datasets/Pillar --output_features_dir patchnetvlad/output_features/pillar_query
+
+python feature_extract.py --config_path patchnetvlad/configs/performance.ini --dataset_file_path=pillar_imageNames_query_real.txt --dataset_root_dir=../../Dataset/PillarReal --output_features_dir patchnetvlad/output_features/pillar_query_real
+
 
 # Feature matching
 python feature_match.py --config_path patchnetvlad/configs/performance.ini --dataset_root_dir=datasets --query_file_path=pitts30k_imageNames_query.txt --index_file_path=pitts30k_imageNames_index.txt --query_input_features_dir patchnetvlad/output_features/pitts30k_query --index_input_features_dir patchnetvlad/output_features/pitts30k_index --ground_truth_path patchnetvlad/dataset_gt_files/pitts30k_test.npz --result_save_folder patchnetvlad/results/pitts30k
@@ -13,6 +18,7 @@ python feature_match.py --config_path patchnetvlad/configs/speed.ini --dataset_r
 python feature_match.py --config_path patchnetvlad/configs/performance.ini --dataset_root_dir=datasets --query_file_path=pitts30k_imageNames_query_test.txt --index_file_path=pitts30k_imageNames_index.txt --query_input_features_dir patchnetvlad/output_features/pitts30k_query_test --index_input_features_dir patchnetvlad/output_features/pitts30k_index --ground_truth_path patchnetvlad/dataset_gt_files/pitts30k_test.npz --result_save_folder patchnetvlad/results/pitts30k_test
 python feature_match.py --config_path patchnetvlad/configs/performance.ini --dataset_root_dir=../../Dataset/Pillar --query_file_path=pillar_imageNames_query.txt --index_file_path=pillar_imageNames_index.txt --query_input_features_dir patchnetvlad/output_features/pillar_query --index_input_features_dir patchnetvlad/output_features/pillar_index --ground_truth_path patchnetvlad/dataset_gt_files/pillar.npz --result_save_folder patchnetvlad/results/pillar
 python feature_match.py --config_path patchnetvlad/configs/performance.ini --dataset_root_dir=../../Dataset/Pillar --query_file_path=pillar_imageNames_query_small.txt --index_file_path=pillar_imageNames_index.txt --query_input_features_dir patchnetvlad/output_features/pillar_query_small --index_input_features_dir patchnetvlad/output_features/pillar_index --ground_truth_path patchnetvlad/dataset_gt_files/pillar_small.npz --result_save_folder patchnetvlad/results/pillar_small
+python feature_match.py --config_path patchnetvlad/configs/performance.ini --dataset_root_dir=../datasets/Pillar --query_file_path=pillar_imageNames_query_small.txt --index_file_path=pillar_imageNames_index.txt --query_input_features_dir patchnetvlad/output_features/pillar_query_small --index_input_features_dir patchnetvlad/output_features/pillar_index --ground_truth_path patchnetvlad/dataset_gt_files/pillar_small.npz --result_save_folder patchnetvlad/results/pillar_small
 
 # Matching two images
 python match_two.py --config_path patchnetvlad/configs/performance.ini --first_im_path=patchnetvlad/example_images/tokyo_query.jpg --second_im_path=patchnetvlad/example_images/tokyo_db.png
@@ -23,6 +29,9 @@ python match_two.py --config_path patchnetvlad/configs/performance.ini --first_i
 python train.py --config_path patchnetvlad/configs/train.ini --cache_path=patchnetvlad/caches/MSLS --save_path=patchnetvlad/checkpoints/MSLS --dataset_root_dir=../../Dataset/MSLS/data
 python train.py --config_path patchnetvlad/configs/train.ini --cache_path=patchnetvlad/caches/Pillar --save_path=patchnetvlad/checkpoints/Pillar --dataset_root_dir=../../Dataset/Pillar
 python train.py --config_path patchnetvlad/configs/train.ini --cache_path=patchnetvlad/caches/Pillar_small --save_path=patchnetvlad/checkpoints/Pillar_small --dataset_root_dir=../../Dataset/Pillar_small
+
+# PCA add
+python add_pca.py --config_path patchnetvlad/configs/train.ini --resume_path=patchnetvlad/checkpoints/Pillar/May30_15-51-18_mapillary_nopanos/checkpoints/checkpoint.pth.tar --dataset_root_dir=../../Dataset/Pillar
 
 
 eef296a420f6e729a5567240f71f976e
