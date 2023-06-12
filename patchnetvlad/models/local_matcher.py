@@ -168,6 +168,7 @@ def local_matcher(predictions, eval_set, input_query_local_features_prefix,
         cand_sorted = np.argsort(diffs)
         reordered_preds.append(pred[cand_sorted])
 
+    diffs = np.array(diffs)
     for i in range(len(diffs)):
         cand_sorted = np.argsort(diffs[i])
         diffs[i] = diffs[i][cand_sorted]
