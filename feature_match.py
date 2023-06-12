@@ -162,8 +162,8 @@ def feature_match(eval_set, device, opt, config):
 
         write_recalls_output(opt, global_recalls, local_recalls, n_values)
 
-        pd.DataFrame(glocal_correct_at_n_per_q).to_csv('glocal_correct_at_n_per_q.csv', index=False, header=False)
-        pd.DataFrame(local_correct_at_n_per_q).to_csv('local_correct_at_n_per_q.csv', index=False, header=False)
+        pd.DataFrame(glocal_correct_at_n_per_q).to_csv(join(opt.result_save_folder, 'glocal_correct_at_n_per_q.csv'), index=False, header=False)
+        pd.DataFrame(local_correct_at_n_per_q).to_csv(join(opt.result_save_folder, 'local_correct_at_n_per_q.csv'), index=False, header=False)
 
     else:
         print('No ground truth was provided; not calculating recalls.')
