@@ -143,7 +143,7 @@ def feature_match(eval_set, device, opt, config):
             # noinspection PyArgumentList
             _, predictions = faiss_index.search(qFeat, min(len(dbFeat), max(n_values)))
 
-    reranked_predictions = local_matcher(predictions, eval_set, input_query_local_features_prefix,
+    reranked_predictions, reranked_diffs = local_matcher(predictions, eval_set, input_query_local_features_prefix,
                                          input_index_local_features_prefix, config, device)
 
     # save predictions to files - Kapture Output
@@ -164,6 +164,7 @@ def feature_match(eval_set, device, opt, config):
 
         pd.DataFrame(glocal_correct_at_n_per_q).to_csv(join(opt.result_save_folder, 'glocal_correct_at_n_per_q.csv'), index=False, header=False)
         pd.DataFrame(local_correct_at_n_per_q).to_csv(join(opt.result_save_folder, 'local_correct_at_n_per_q.csv'), index=False, header=False)
+        pd.DataFrame(reranked_diffs).to_csv(join(opt.result_save_folder, 'reranked_diffs.csv'), index=False, header=False)
 
     else:
         print('No ground truth was provided; not calculating recalls.')
