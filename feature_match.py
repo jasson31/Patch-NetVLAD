@@ -48,6 +48,7 @@ import torch
 import numpy as np
 import faiss
 from tqdm.auto import tqdm
+import pandas as pd
 
 from patchnetvlad.tools.datasets import PlaceDataset
 from patchnetvlad.models.local_matcher import local_matcher
@@ -56,18 +57,20 @@ from patchnetvlad.tools import PATCHNETVLAD_ROOT_DIR
 
 def compute_recall(gt, predictions, numQ, n_values, recall_str=''):
     correct_at_n = np.zeros(len(n_values))
+    correct_at_n_per_q = np.zeros(numQ)
     for qIx, pred in enumerate(predictions):
         for i, n in enumerate(n_values):
             # if in top N then also in top NN, where NN > N
             if np.any(np.in1d(pred[:n], gt[qIx])):
                 correct_at_n[i:] += 1
+                correct_at_n_per_q[qIx] = n
                 break
     recall_at_n = correct_at_n / numQ
     all_recalls = {}  # make dict for output
     for i, n in enumerate(n_values):
         all_recalls[n] = recall_at_n[i]
         tqdm.write("====> Recall {}@{}: {:.4f}".format(recall_str, n, recall_at_n[i]))
-    return all_recalls
+    return all_recalls, correct_at_n_per_q
 
 
 def write_kapture_output(opt, eval_set, predictions, outfile_name):
@@ -154,10 +157,14 @@ def feature_match(eval_set, device, opt, config):
         print('Calculating recalls using ground truth.')
         gt = eval_set.get_positives()
 
-        global_recalls = compute_recall(gt, predictions, eval_set.numQ, n_values, 'NetVLAD')
-        local_recalls = compute_recall(gt, reranked_predictions, eval_set.numQ, n_values, 'PatchNetVLAD')
+        global_recalls, glocal_correct_at_n_per_q = compute_recall(gt, predictions, eval_set.numQ, n_values, 'NetVLAD')
+        local_recalls, local_correct_at_n_per_q = compute_recall(gt, reranked_predictions, eval_set.numQ, n_values, 'PatchNetVLAD')
 
         write_recalls_output(opt, global_recalls, local_recalls, n_values)
+
+        pd.DataFrame(glocal_correct_at_n_per_q).to_csv('glocal_correct_at_n_per_q.csv', index=False, header=False)
+        pd.DataFrame(local_correct_at_n_per_q).to_csv('local_correct_at_n_per_q.csv', index=False, header=False)
+
     else:
         print('No ground truth was provided; not calculating recalls.')
 
