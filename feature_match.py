@@ -157,12 +157,12 @@ def feature_match(eval_set, device, opt, config):
         print('Calculating recalls using ground truth.')
         gt = eval_set.get_positives()
 
-        global_recalls, glocal_correct_at_n_per_q = compute_recall(gt, predictions, eval_set.numQ, n_values, 'NetVLAD')
+        global_recalls, global_correct_at_n_per_q = compute_recall(gt, predictions, eval_set.numQ, n_values, 'NetVLAD')
         local_recalls, local_correct_at_n_per_q = compute_recall(gt, reranked_predictions, eval_set.numQ, n_values, 'PatchNetVLAD')
 
         write_recalls_output(opt, global_recalls, local_recalls, n_values)
 
-        pd.DataFrame(glocal_correct_at_n_per_q).to_csv(join(opt.result_save_folder, 'glocal_correct_at_n_per_q.csv'), index=False, header=False)
+        pd.DataFrame(global_correct_at_n_per_q).to_csv(join(opt.result_save_folder, 'global_correct_at_n_per_q.csv'), index=False, header=False)
         pd.DataFrame(local_correct_at_n_per_q).to_csv(join(opt.result_save_folder, 'local_correct_at_n_per_q.csv'), index=False, header=False)
         pd.DataFrame(reranked_diffs).to_csv(join(opt.result_save_folder, 'reranked_diffs.csv'), index=False, header=False)
 

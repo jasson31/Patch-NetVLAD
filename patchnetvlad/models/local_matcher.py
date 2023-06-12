@@ -147,6 +147,7 @@ def local_matcher(predictions, eval_set, input_query_local_features_prefix,
     matcher = PatchMatcher(config['feature_match']['matcher'], patch_sizes, strides, all_keypoints,
                            all_indices)
 
+    diff_for_log = []
     for q_idx, pred in enumerate(tqdm(predictions, leave=False, desc='Patch compare pred')):
         diffs = np.zeros((predictions.shape[1], len(patch_sizes)))
         image_name_query = os.path.splitext(os.path.basename(eval_set.images[eval_set.numDb + q_idx]))[0]
@@ -166,11 +167,7 @@ def local_matcher(predictions, eval_set, input_query_local_features_prefix,
 
         diffs = normalise_func(diffs, len(patch_sizes), patch_weights)
         cand_sorted = np.argsort(diffs)
+        diff_for_log.append(np.array(diffs)[cand_sorted])
         reordered_preds.append(pred[cand_sorted])
 
-    diffs = np.array(diffs)
-    for i in range(len(diffs)):
-        cand_sorted = np.argsort(diffs[i])
-        diffs[i] = diffs[i][cand_sorted]
-
-    return reordered_preds, diffs
+    return reordered_preds, diff_for_log
