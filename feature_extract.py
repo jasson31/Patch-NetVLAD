@@ -134,9 +134,7 @@ def main():
 
     if not os.path.isfile(opt.dataset_file_path):
         opt.dataset_file_path = join(PATCHNETVLAD_ROOT_DIR, 'dataset_imagenames', opt.dataset_file_path)
-
-    dataset = PlaceDataset(None, opt.dataset_file_path, opt.dataset_root_dir, None, config['feature_extract'])
-
+        
     # must resume to do extraction
     if config['global_params']['num_pcs'] != '0':
         resume_ckpt = config['global_params']['resumePath'] + config['global_params']['num_pcs'] + '.pth.tar'
@@ -176,12 +174,15 @@ def main():
 
     print('Initialize : ' + str(time() - before_time))
     before_time = time()
+    dataset = PlaceDataset(None, opt.dataset_file_path, opt.dataset_root_dir, None, config['feature_extract'])
     feature_extract(dataset, model, device, opt, config)
     print('First : ' + str(time() - before_time))
     before_time = time()
+    dataset = PlaceDataset(None, opt.dataset_file_path, opt.dataset_root_dir, None, config['feature_extract'])
     feature_extract(dataset, model, device, opt, config)
     print('Second : ' + str(time() - before_time))
     before_time = time()
+    dataset = PlaceDataset(None, opt.dataset_file_path, opt.dataset_root_dir, None, config['feature_extract'])
     feature_extract(dataset, model, device, opt, config)
     print('Third : ' + str(time() - before_time))
 
