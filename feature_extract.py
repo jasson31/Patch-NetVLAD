@@ -181,6 +181,9 @@ def main():
     before_time = time()
     feature_extract(dataset, model, device, opt, config)
     print('Second : ' + str(time() - before_time))
+    before_time = time()
+    feature_extract(dataset, model, device, opt, config)
+    print('Third : ' + str(time() - before_time))
 
     torch.cuda.empty_cache()  # garbage clean GPU memory, a bug can occur when Pytorch doesn't automatically clear the
     # memory after runs

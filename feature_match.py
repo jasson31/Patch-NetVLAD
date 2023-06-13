@@ -53,6 +53,7 @@ import pandas as pd
 from patchnetvlad.tools.datasets import PlaceDataset
 from patchnetvlad.models.local_matcher import local_matcher
 from patchnetvlad.tools import PATCHNETVLAD_ROOT_DIR
+from time import time
 
 
 def compute_recall(gt, predictions, numQ, n_values, recall_str=''):
@@ -101,7 +102,7 @@ def write_recalls_output(opt, recalls_netvlad, recalls_patchnetvlad, n_values):
             rec_out.write("Recall {}@{}: {:.4f}\n".format('PatchNetVLAD', n, recalls_patchnetvlad[n]))
 
 
-def feature_match(eval_set, device, opt, config):
+def feature_match(eval_set, device, opt, config, before_time):
     input_query_local_features_prefix = join(opt.query_input_features_dir, 'patchfeats')
     input_query_global_features_prefix = join(opt.query_input_features_dir, 'globalfeats.npy')
     input_index_local_features_prefix = join(opt.index_input_features_dir, 'patchfeats')
@@ -140,8 +141,11 @@ def feature_match(eval_set, device, opt, config):
                 predictions_new.append(pred)
             predictions = np.array(predictions_new)
         else:
+            print('Initialize : ' + str(time() - before_time))
+            before_time = time()
             # noinspection PyArgumentList
             _, predictions = faiss_index.search(qFeat, min(len(dbFeat), max(n_values)))
+            print('Predict : ' + str(time() - before_time))
 
     reranked_predictions, reranked_diffs = local_matcher(predictions, eval_set, input_query_local_features_prefix,
                                          input_index_local_features_prefix, config, device)
@@ -169,8 +173,8 @@ def feature_match(eval_set, device, opt, config):
     else:
         print('No ground truth was provided; not calculating recalls.')
 
-
 def main():
+    before_time = time()
     parser = argparse.ArgumentParser(description='Patch-NetVLAD-Feature-Match')
     parser.add_argument('--config_path', type=str, default=join(PATCHNETVLAD_ROOT_DIR, 'configs/performance.ini'),
                         help='File name (with extension) to an ini file that stores most of the configuration data for patch-netvlad')
@@ -212,7 +216,7 @@ def main():
     dataset = PlaceDataset(opt.query_file_path, opt.index_file_path, opt.dataset_root_dir, opt.ground_truth_path,
                            config['feature_extract'], posDistThr=opt.posDistThr)
 
-    feature_match(dataset, device, opt, config)
+    feature_match(dataset, device, opt, config, before_time)
 
     torch.cuda.empty_cache()  # garbage clean GPU memory, a bug can occur when Pytorch doesn't automatically clear the
                               # memory after runs
