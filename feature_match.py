@@ -141,11 +141,12 @@ def feature_match(eval_set, device, opt, config, before_time):
                 predictions_new.append(pred)
             predictions = np.array(predictions_new)
         else:
+            print('match before : ' + str(before_time))
+            print('match initialize  : ' + str(time()))
             print('Initialize : ' + str(time() - before_time))
             before_time = time()
             # noinspection PyArgumentList
             _, predictions = faiss_index.search(qFeat, min(len(dbFeat), max(n_values)))
-            print('Predict : ' + str(time() - before_time))
 
     reranked_predictions, reranked_diffs = local_matcher(predictions, eval_set, input_query_local_features_prefix,
                                          input_index_local_features_prefix, config, device)
@@ -153,11 +154,12 @@ def feature_match(eval_set, device, opt, config, before_time):
     # save predictions to files - Kapture Output
     write_kapture_output(opt, eval_set, predictions, 'NetVLAD_predictions.txt')
     write_kapture_output(opt, eval_set, reranked_predictions, 'PatchNetVLAD_predictions.txt')
+    print('Predict : ' + str(time() - before_time))
 
     print('Finished matching features.')
 
     # for each query get those within threshold distance
-    if opt.ground_truth_path is not None:
+    '''if opt.ground_truth_path is not None:
         print('Calculating recalls using ground truth.')
         gt = eval_set.get_positives()
 
@@ -171,10 +173,11 @@ def feature_match(eval_set, device, opt, config, before_time):
         pd.DataFrame(reranked_diffs).to_csv(join(opt.result_save_folder, 'reranked_diffs.csv'), index=False, header=False)
 
     else:
-        print('No ground truth was provided; not calculating recalls.')
+        print('No ground truth was provided; not calculating recalls.')'''
 
 def main():
     before_time = time()
+    print('match before : ' + str(before_time))
     parser = argparse.ArgumentParser(description='Patch-NetVLAD-Feature-Match')
     parser.add_argument('--config_path', type=str, default=join(PATCHNETVLAD_ROOT_DIR, 'configs/performance.ini'),
                         help='File name (with extension) to an ini file that stores most of the configuration data for patch-netvlad')
