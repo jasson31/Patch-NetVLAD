@@ -48,6 +48,7 @@ import numpy as np
 from patchnetvlad.tools.datasets import PlaceDataset
 from patchnetvlad.models.models_generic import get_backend, get_model, get_pca_encoding
 from patchnetvlad.tools import PATCHNETVLAD_ROOT_DIR
+from time import time
 
 
 def feature_extract(eval_set, model, device, opt, config):
@@ -102,6 +103,8 @@ def feature_extract(eval_set, model, device, opt, config):
 
 
 def main():
+
+    before_time = time()
     parser = argparse.ArgumentParser(description='Patch-NetVLAD-Feature-Extract')
     parser.add_argument('--config_path', type=str, default=join(PATCHNETVLAD_ROOT_DIR, 'configs/performance.ini'),
                         help='File name (with extension) to an ini file that stores most of the configuration data for patch-netvlad')
@@ -171,7 +174,13 @@ def main():
     else:
         raise FileNotFoundError("=> no checkpoint found at '{}'".format(resume_ckpt))
 
+    print('Initialize : ' + str(time() - before_time))
+    before_time = time()
     feature_extract(dataset, model, device, opt, config)
+    print('First : ' + str(time() - before_time))
+    before_time = time()
+    feature_extract(dataset, model, device, opt, config)
+    print('Second : ' + str(time() - before_time))
 
     torch.cuda.empty_cache()  # garbage clean GPU memory, a bug can occur when Pytorch doesn't automatically clear the
     # memory after runs
