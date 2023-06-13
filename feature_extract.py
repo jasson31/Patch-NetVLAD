@@ -103,7 +103,7 @@ def feature_extract(eval_set, model, device, opt, config):
 
 
 def main():
-
+    print('Start : ' + str(time()))
     before_time = time()
     parser = argparse.ArgumentParser(description='Patch-NetVLAD-Feature-Extract')
     parser.add_argument('--config_path', type=str, default=join(PATCHNETVLAD_ROOT_DIR, 'configs/performance.ini'),
@@ -134,7 +134,7 @@ def main():
 
     if not os.path.isfile(opt.dataset_file_path):
         opt.dataset_file_path = join(PATCHNETVLAD_ROOT_DIR, 'dataset_imagenames', opt.dataset_file_path)
-        
+
     # must resume to do extraction
     if config['global_params']['num_pcs'] != '0':
         resume_ckpt = config['global_params']['resumePath'] + config['global_params']['num_pcs'] + '.pth.tar'

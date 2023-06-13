@@ -224,6 +224,7 @@ def main():
     torch.cuda.empty_cache()  # garbage clean GPU memory, a bug can occur when Pytorch doesn't automatically clear the
                               # memory after runs
     print('Done')
+    print('End : ' + str(time()))
 
 
 if __name__ == "__main__":
