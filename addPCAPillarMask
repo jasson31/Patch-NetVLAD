@@ -1,0 +1,1 @@
+python add_pca.py --config_path patchnetvlad/configs/train.ini --resume_path=patchnetvlad/checkpoints/PillarMask/Jul29_15-21-39_mapillary_nopanos/checkpoints/checkpoint.pth.tar --dataset_root_dir=../datasets/PillarMask

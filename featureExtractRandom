@@ -1,0 +1,2 @@
+python feature_extract.py --config_path patchnetvlad/configs/performance.ini --dataset_file_path=pillar_imageNames_index_random.txt --dataset_root_dir=../datasets --output_features_dir patchnetvlad/output_features/pillar_index_random
+python feature_extract.py --config_path patchnetvlad/configs/performance.ini --dataset_file_path=pillar_imageNames_query_random.txt --dataset_root_dir=../datasets --output_features_dir patchnetvlad/output_features/pillar_query_random

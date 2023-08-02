@@ -1,0 +1,1 @@
+python feature_extract.py --config_path patchnetvlad/configs/speed.ini --dataset_file_path=pillar_imageNames_query_test.txt --dataset_root_dir=../datasets --output_features_dir patchnetvlad/output_features/pillar_query_test

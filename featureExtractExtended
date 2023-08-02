@@ -1,0 +1,2 @@
+python feature_extract.py --config_path patchnetvlad/configs/performance.ini --dataset_file_path=pillar_imageNames_index_extended2.txt --dataset_root_dir=../datasets --output_features_dir patchnetvlad/output_features/pillar_index_extended2
+

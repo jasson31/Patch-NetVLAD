@@ -1,0 +1,3 @@
+python feature_extract.py --config_path patchnetvlad/configs/performance.ini --dataset_file_path=pillar_imageNames_query_real_small.txt --dataset_root_dir=../datasets --output_features_dir patchnetvlad/output_features/pillar_query_real_small
+python feature_match.py --config_path patchnetvlad/configs/performance.ini --dataset_root_dir=../datasets --query_file_path=pillar_imageNames_query_real_small.txt --index_file_path=pillar_imageNames_index_extended2.txt --query_input_features_dir patchnetvlad/output_features/pillar_query_real_small --index_input_features_dir patchnetvlad/output_features/pillar_index_extended2 --ground_truth_path patchnetvlad/dataset_gt_files/pillar_short_real_small.npz --result_save_folder patchnetvlad/results/pillar_real_small
+

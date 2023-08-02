@@ -1,0 +1,1 @@
+python feature_extract.py --config_path patchnetvlad/configs/performance.ini --dataset_file_path=maskedPillar_imageNames_query_SAM_hard.txt --dataset_root_dir=../datasets --output_features_dir patchnetvlad/output_features/maskedPillar_query_SAM_hard

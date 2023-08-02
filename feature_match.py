@@ -159,7 +159,7 @@ def feature_match(eval_set, device, opt, config, before_time):
     print('Finished matching features.')
 
     # for each query get those within threshold distance
-    '''if opt.ground_truth_path is not None:
+    if opt.ground_truth_path is not None:
         print('Calculating recalls using ground truth.')
         gt = eval_set.get_positives()
 
@@ -173,7 +173,7 @@ def feature_match(eval_set, device, opt, config, before_time):
         pd.DataFrame(reranked_diffs).to_csv(join(opt.result_save_folder, 'reranked_diffs.csv'), index=False, header=False)
 
     else:
-        print('No ground truth was provided; not calculating recalls.')'''
+        print('No ground truth was provided; not calculating recalls.')
 
 def main():
     before_time = time()

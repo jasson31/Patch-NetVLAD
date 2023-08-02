@@ -1,0 +1,1 @@
+python train.py --config_path patchnetvlad/configs/train.ini --cache_path=patchnetvlad/caches/Pillar --save_path=patchnetvlad/checkpoints/Pillar --dataset_root_dir=../datasets/Pillar
